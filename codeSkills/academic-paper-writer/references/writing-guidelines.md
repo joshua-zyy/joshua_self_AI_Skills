@@ -1,125 +1,162 @@
-# 写作风格适配指南
+# 写作风格适配与证据优先级指南
 
-## 目录
+## 使用定位
 
-- Web 风格检索 Checklist
-- 学术写作最佳实践
-- 中英双语写作注意事项
-- 常见 CS/AI 会议/期刊风格速查
+本文件用于在用户提供目标会议/期刊时，生成一个**简短、可审计的 `Style Brief`**。
+
+注意：
+
+- 风格适配是增强项，不是主流程中心。
+- 若用户没有提供目标会议/期刊，应直接采用通用 CS/AI 论文风格。
+- 若风格信息与官方规则冲突，必须以官方规则为准。
 
 ---
 
-## Web 风格检索 Checklist
+## 1. 工具与信息来源
 
-当确认目标会议/期刊后，使用 `webfetch` 搜索检索以下信息：
+当需要做目标会议/期刊适配时，使用 `web` 检索。
+
+检索目标不是“搜集一切相关信息”，而是确认少量高价值事实：
+
+- 投稿规则
+- 模板要求
+- 页数限制
+- 匿名要求
+- 官方语言与格式偏好
+
+---
+
+## 2. 证据分层
+
+### 一级证据：强约束来源
+
+只能由这些来源定义 venue 规则：
+
+- 官方 CFP 页面
+- 官方 Author Guidelines
+- 官方 LaTeX / Word 模板说明
+- 官方 submission instructions
+
+这些信息可决定：
+
+- 页数限制
+- 附录政策
+- 匿名要求
+- 模板要求
+- 提交格式
+
+### 二级证据：风格样本来源
+
+这些来源可用于观察写作风格，但不能覆盖一级规则：
+
+- 官方 proceedings
+- 已录用论文
+- 最佳论文或代表性论文
+
+这些信息可辅助判断：
+
+- Abstract 常见写法
+- Introduction 的组织方式
+- Related Work 常见位置
+- Experiments 的展开密度
+- 图表使用习惯
+
+### 三级证据：弱参考来源
+
+这些来源只能作为辅助线索：
+
+- 博客总结
+- 经验帖
+- 非官方“拒稿原因”汇总
+- 二手模板解读
+
+规则：
+
+- 三级证据不能定义 venue 规范
+- 三级证据不能覆盖一级或二级信息
+- 如果三级证据与官方页面冲突，应直接丢弃
+
+---
+
+## 3. Style Brief 的最小内容
+
+生成的 `Style Brief` 应尽量短，只包含以下内容：
+
+```md
+## Style Brief
+
+- Venue:
+- Official Source:
+- Page Limit:
+- Appendix Policy:
+- Anonymous Review:
+- Template:
+- Language:
+- Preferred Structure Notes:
+- Writing Tone Notes:
+```
+
+说明：
+
+- `Official Source` 必须指向官方页面或官方模板说明
+- `Preferred Structure Notes` 只写高价值差异，不写泛泛而谈的套话
+- 如果某项未确认，应写 `Unknown`，不要猜
+
+---
+
+## 4. 风格适配时该看什么
 
 ### 必检项
 
-- [ ] **投稿指南**: 搜索 `{会议名} {年份} call for papers` 或 `{期刊名} author guidelines`
-- [ ] **格式模板**: 搜索 `{会议名} latex template` 或 `{期刊名} template`
-- [ ] **页数限制**: 确认正文页数和附录页数
-- [ ] **匿名要求**: 是否要求双盲审稿（需匿名化自我引用）
-- [ ] **提交格式**: PDF only / LaTeX source / 其他
+- 官方投稿页是否存在明确页数限制
+- 是否要求双盲审稿
+- 是否提供官方模板
+- 是否要求特定语言或格式
 
-### 进阶检索
+### 可选项
 
-- [ ] **近期最佳论文**: 搜索 `{会议名} {年份} best paper` 学习获奖论文写作风格
-- [ ] **领域同类论文**: 搜索 `site:{会议网站/会议proceedings} {关键方法词}` 查看同类论文的写法
-- [ ] **审稿指南**: 搜索 `{会议名} reviewer guidelines` 了解审稿人关注要点
-- [ ] **常见拒稿原因**: 搜索 `{会议名} common rejection reasons` 了解需要避免的问题
+- 同 venue 同领域论文是否倾向独立 `Related Work`
+- 实验节是否偏向定量主导还是分析主导
+- 图表密度是否偏高
+- 语气是否偏直接、简洁、工程化，还是偏理论化、抽象化
 
-### 风格要点提取
-
-从检索到的论文中提取：
-1. **Abstract 风格**: 是否包含量化结果？篇幅？
-2. **Introduction 段落数**: 典型几段？贡献列表格式？
-3. **Related Work 位置**: 独立节 vs 嵌入 Introduction？
-4. **实验组织**: 子节划分方式？表格格式？用什么数据集？
-5. **图表密度**: 每页平均几个图/表？
-6. **语言风格**: 正式程度？是否使用第一人称？被动语态比例？
+这些观察只能用于“微调写法”，不能反向修改官方规则。
 
 ---
 
-## 学术写作最佳实践
+## 5. 没有目标 venue 时的默认写法
 
-### 通用原则
+若未提供目标会议/期刊：
 
-- **清晰优先**: 句子简洁，一段一主题
-- **逻辑链条**: 每段首句是主题句，后文论证
-- **量化表述**: 用具体数字替代模糊描述（"improves by 3.2%" 而非 "significantly improves"）
-- **适度引用**: 关键主张有文献支撑，但不堆砌引用
-
-### 段落结构
-
-- 段首: 主题句（本段要说什么）
-- 段中: 论据、分析、对比
-- 段尾: 小结或过渡到下一段
-- 每段 5-8 句为宜
-
-### 过渡词使用
-
-- **递进**: Furthermore, Moreover, In addition
-- **转折**: However, Nevertheless, On the contrary
-- **因果**: Therefore, Consequently, As a result
-- **举例**: For instance, Specifically, To illustrate
-- **总结**: In summary, To summarize, Overall
-
-### 避免事项
-
-- 冗长从句嵌套
-- 模糊量化词（"a lot", "very", "really"）
-- 同义反复表达
-- 过度被动语态（适当使用主动语态更清晰）
-- 悬垂修饰语
+- 默认使用通用 CS/AI 论文结构
+- 默认英文写作；若用户明确要求中文，则使用中文
+- 不生成 venue-specific 约束
+- 不假设页数、匿名、模板要求
 
 ---
 
-## 中英双语写作注意事项
+## 6. 风格适配的失败处理
 
-### 英文写作常见问题
+若官方页面无法确认关键信息：
 
-| 问题 | 错误示例 | 正确示例 |
-|------|----------|----------|
-| 冠词缺失 | We propose novel method. | We propose **a** novel method. |
-| 可数名词复数 | This approach handle various task. | This approach handle**s** various task**s**. |
-| 时态混乱 | We evaluated results and show that... | We evaluat**ed** results and show**ed** that... |
-| 主谓一致 | The results shows... | The results show... |
-| 介词错误 | experiment on three datasets | experiments **on** three datasets |
-| 连词冗余 | Although..., but... | Although..., **[去掉but]**... |
-
-### 英文论文时态规范
-
-- **Introduction/Related Work**: 一般现在时（"Previous methods focus on..."）
-- **Method 描述**: 一般现在时（"Our method consists of..."）
-- **Experiments**: 过去时（"We conducted experiments..."）或一般现在时（"Table 1 shows..."）
-- **Conclusion**: 一般现在时（"Our method achieves..."）
-
-### 中文写作注意事项
-
-- 学术中文避免口语化表达
-- 使用"本文""本研究"而非"我们"（部分场合）
-- 技术术语首次出现时标注英文原词
-- 图表说明可以用中英双语
-
-### 语言切换判断
-
-- 目标为国际会议/期刊 → 英文写作
-- 目标为国内中文期刊 → 中文写作，术语附英文
-- 根据目标会议/期刊的官方语言决定
+- 明确写出 `Unknown`
+- 使用通用 CS/AI 结构继续生成大纲和草稿
+- 不得因为需要完成 `Style Brief` 而引用二手页面强行补齐规则
 
 ---
 
-## 常见 CS/AI 会议/期刊风格速查
+## 7. 与草稿生成的边界
 
-| 会议/期刊 | 典型页数 | 匿名审稿 | 模板 | Related Work 位置 | 特点 |
-|-----------|----------|----------|------|--------------------|------|
-| CVPR | 8+2 appendix | 是 | LaTeX | 独立节 | 重视可视化和定性分析 |
-| NeurIPS | 9+appendix | 是 | LaTeX | 独立节 | 理论严谨性，重视 ablation |
-| ICML | 8+appendix | 是 | LaTeX | 独立节 | 理论+实验并重 |
-| ICLR | 9+appendix | 是 | LaTeX | Introduction 或独立节 | 重视理论洞察 |
-| ACL | 8+appendix | 是 | LaTeX | 独立节 | 强调语言学动机 |
-| AAAI | 8 | 是 | LaTeX | 独立节 | 广泛AI主题，表述清晰直白 |
-| IEEE Trans | 12-15 | 否 | LaTeX/Word | 独立节长篇综述 | 详细实验和讨论 |
-| JMLR | 无限制 | 否 | LaTeX | 独立节长篇综述 | 理论证明充分 |
+风格适配只能影响：
 
-> 注意：以上为概括性信息，实际以目标会议/期刊官方指南为准。务必在 Step 3 中进行 web 检索确认。
+- 大纲组织
+- 语气与表达方式
+- 是否保留某些常见章节
+
+风格适配不能越权影响：
+
+- 实验结果真实性
+- 引用真实性
+- 图表是否已存在
+
+换言之，`Style Brief` 可以改变“怎么写”，不能改变“有没有事实依据”。

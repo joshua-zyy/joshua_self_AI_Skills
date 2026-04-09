@@ -1,205 +1,141 @@
-# 参考文献库构建指南
+# 候选参考文献与核验指南
 
-## 目录
+## 使用定位
 
-- 检索策略
-- 本地 PDF 组织规范
-- 索引文件格式
-- BibTeX 格式参考
-- 引用格式适配
+本文件不再服务于“本地 PDF 文献库构建”。
 
----
+默认策略是：
 
-## 检索策略
+- 论文正文以**用户已提供参考文献**为主
+- 在线检索得到的文献只作为**候选文献**
+- 未核验文献不能直接作为正文中的确定性引用
 
-### 关键词提取
-
-从用户的研究概要中提取以下类型的关键词：
-
-1. **核心方法词**: 研究方法/模型的专有名称（如 "transformer", "contrastive learning"）
-2. **任务词**: 研究任务名称（如 "object detection", "sentiment analysis"）
-3. **领域词**: 应用领域（如 "medical imaging", "autonomous driving"）
-4. **技术词**: 关键技术组件（如 "attention mechanism", "graph neural network"）
-
-组合搜索公式：`(核心方法词 OR 技术词) AND 任务词 AND 领域词`
-
-### 搜索渠道
-
-按优先级排列：
-
-1. **目标会议/期刊**: `site:openreview.net {关键词}` 或 `site:proceedings.mlr.press {关键词}`
-2. **Google Scholar**: `"{论文名}" {作者}` 或 `{关键词} survey`
-3. **arXiv**: `"{关键词}" site:arxiv.org`
-4. **Semantic Scholar**: 搜索关键方法词，按引用数排序
-5. **DBLP**: 搜索特定作者或会议的论文列表
-
-### 文献筛选标准
-
-- **必引**: 目标会议/期刊近3年的相关论文
-- **必引**: 领域内奠基性/开创性论文（高被引）
-- **必引**: 直接对比的方法（SOTA baseline）的原论文
-- **推荐**: 综述性论文（如近2年的 survey）
-- **推荐**: 与本文方法最相似的2-3篇同期论文
-- **避免**: 过于陈旧（>10年除非是奠基论文）、低引用且不直接相关的论文
+如果用户只是想从研究概要生成论文草稿，文献管理不应成为主流程阻塞项。
 
 ---
 
-## 本地 PDF 组织规范
+## 1. 候选文献的来源优先级
 
-### 目录结构
+推荐优先级如下：
 
-在论文项目目录下创建：
-
-```
-{paper-project}/
-├── paper.md                    # 论文正文
-├── references/                 # 参考文献库
-│   ├── index.md                # 文献索引文件
-│   ├── vaswani2017_attention.pdf
-│   ├── devlin2019_bert.pdf
-│   └── he2016_resnet.pdf
-├── figures/                    # 论文图片
-└── tables/                    # 论文表格数据
-```
-
-### PDF 命名规范
-
-格式: `{第一作者姓氏}{年份}_{核心关键词}.pdf`
+1. **官方或权威索引源**
+   - 会议/期刊官方 proceedings
+   - OpenReview
+   - PMLR
+   - ACL Anthology
+   - IEEE Xplore
+   - ACM Digital Library
+   - arXiv 官方页面
+   - DBLP
+2. **学术搜索与聚合平台**
+   - Google Scholar
+   - Semantic Scholar
+3. **二手页面**
+   - 博客、实验室主页、经验整理帖
 
 规则：
-- 作者姓氏全小写
-- 年份4位数字
-- 关键词用简短英文，下划线分隔
-- 多作者同名时添加首字母区分
-- 示例：
-  - `vaswani2017_attention.pdf`
-  - `devlin2019_bert.pdf`
-  - `he2016_resnet.pdf`
-  - `brown2020_gpt3.pdf`
-  - `zhang2018_attention_a.pdf` vs `zhang2020_attention_b.pdf`
+
+- 一级来源优先用于确定元数据
+- 二级来源可辅助发现论文，但不能替代元数据核验
+- 三级来源最多帮助发现线索，不能作为正式引用依据
 
 ---
 
-## 索引文件格式
+## 2. 候选文献的最小元数据
 
-`references/index.md` 格式：
+每条候选文献至少包含：
 
-```markdown
-# 参考文献索引
+- `title`
+- `authors`
+- `venue`
+- `year`
+- `source link`
+- `verification status`
 
-> 最后更新: {日期}
-> 共 {N} 篇文献
+其中 `verification status` 只能取：
 
-## [1] {论文标题}
+- `VERIFIED`
+- `UNVERIFIED`
 
-- **作者**: {作者列表}
-- **年份**: {年份}
-- **来源**: {会议/期刊名} {年份}
-- **核心贡献**: {1句话概括}
-- **与本文关系**: {说明本文与该文献的关系}
-- **本地路径**: references/{文件名}.pdf
-- **BibTeX Key**: {作者姓氏}{年份}
+推荐输出格式：
 
----
-```
+```md
+## Candidate References
 
-### 索引分组
-
-当文献数量超过15篇时，建议分组：
-
-```markdown
-# 参考文献索引
-
-## 1. 核心方法相关
-
-### [1] Attention Is All You Need
-...
-
-## 2. 实验基线方法
-
-### [5] ...
-...
-
-## 3. 领域背景
-
-### [10] ...
-...
+1. Title: ...
+   Authors: ...
+   Venue: ...
+   Year: ...
+   Source Link: ...
+   Status: VERIFIED
+   Relation to Draft: ...
 ```
 
 ---
 
-## BibTeX 格式参考
+## 3. 核验规则
 
-### 常见条目类型
+### VERIFIED
 
-| 类型 | 用途 | 必填字段 |
-|------|------|----------|
-| `@inproceedings` | 会议论文 | author, title, booktitle, year |
-| `@article` | 期刊论文 | author, title, journal, volume, number, pages, year |
-| `@misc` | 预印本(arXiv) | author, title, year, eprint, archiveprefix |
-| `@phdthesis` | 博士论文 | author, title, school, year |
-| `@www` | 网页 | author, title, url, year |
+只有在以下信息都能从可信来源交叉确认时，才可标为 `VERIFIED`：
 
-### BibTeX 示例
+- 标题准确
+- 作者列表准确
+- venue 准确
+- 年份准确
+- 来源链接可定位到原始论文页面或权威索引页面
 
-```bibtex
-@inproceedings{vaswani2017attention,
-  author    = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, {\L}ukasz and Polosukhin, Illia},
-  title     = {Attention Is All You Need},
-  booktitle = {Advances in Neural Information Processing Systems},
-  year      = {2017},
-  volume    = {30}
-}
+### UNVERIFIED
 
-@article{devlin2019bert,
-  author    = {Devlin, Jacob and Chang, Ming-Wei and Lee, Kenton and Toutanova, Kristina},
-  title     = {{BERT}: Pre-training of Deep Bidirectional Transformers for Language Understanding},
-  journal   = {Journal of Machine Learning Research},
-  volume    = {20},
-  pages     = {1--4},
-  year      = {2019}
-}
+出现以下任一情况时，应标为 `UNVERIFIED`：
 
-@misc{brown2020gpt3,
-  author    = {Brown, Tom and Mann, Benjamin and Ryder, Nick and Subbiah, Melanie and others},
-  title     = {Language Models are Few-Shot Learners},
-  year      = {2020},
-  eprint    = {2005.14165},
-  archivePrefix = {arXiv}
-}
-```
+- 只能从聚合搜索结果看到标题，未打开原始来源
+- 作者、venue、年份存在不一致
+- 只有博客、二手网页或模糊截图
+- 仅凭模型记忆生成条目
+
+`UNVERIFIED` 条目不得直接写成正文中的确定性引用。
 
 ---
 
-## 引用格式适配
+## 4. 正文中的引用策略
 
-### 文内引用格式
+### 用户已提供参考文献
 
-| 风格 | 格式 | 示例 |
-|------|------|------|
-| 数字编号 | `[1]` | Recent methods [1] show that... |
-| 作者-年份 | `(Author, Year)` | Recent methods (Vaswani et al., 2017) show that... |
-| APA | `(Author, Year)` | (Vaswani et al., 2017) |
-| IEEE | `[1]` | Recent methods [1] show that... |
+- 可直接在正文中使用
+- 若缺失统一格式，可在最终整理时统一
 
-常见 CS 顶会使用格式：
-- **NeurIPS/ICML/ICLR**: 数字编号 `[1]`
-- **CVPR/ECCV/ICCV**: 数字编号 `[1]`
-- **ACL/EMNLP**: 作者-年份 `(Author, Year)`
-- **IEEE Trans**: 数字编号 `[1]`
+### 已核验候选文献
 
-### 引用语句模板
+- 可以在正文中引用
+- 仍建议在最终投稿前人工复核
 
-**支持型**:
-- "Recent studies [1, 2] have demonstrated that..."
-- "Inspired by [3], we propose..."
-- "Following [4], we adopt..."
+### 未核验候选文献
 
-**对比型**:
-- "Unlike [5], which requires..., our method..."
-- "While [6] focuses on..., we extend..."
-- "[7] achieves X, but suffers from Y. Our method addresses this by..."
+- 不写入正文
+- 可放在 `Candidate References` 中供用户后续筛选
+- 正文改用 `[REF_NEEDED: claim/topic]`
 
-**奠基型**:
-- "The seminal work of [8] introduced..."
-- "[9] pioneered the approach of..."
+---
+
+## 5. 禁止行为
+
+以下行为应明确禁止：
+
+- 编造并不存在的论文
+- 猜测作者列表、年份或 venue
+- 只因为“这句话看起来需要引用”就随意补一篇文献
+- 将未核验候选文献伪装成已确认引用
+
+---
+
+## 6. 何时可以完全跳过文献推荐
+
+在以下场景中，可以不主动推荐候选文献：
+
+- 用户只想把研究概要快速扩成论文草稿
+- 当前重点是方法表达和论文结构，而非 Related Work 完整性
+- 用户已经提供了足够的参考文献
+- 用户明确表示后续自己补引用
+
+这时正文中只需保留 `[REF_NEEDED: ...]` 占位符即可。
